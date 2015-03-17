@@ -2,7 +2,6 @@ module FormattedAttributes
   module ActiveRecord
     def self.included(base)
       base.instance_eval do
-        include InstanceMethods
         extend ClassMethods
       end
     end
@@ -12,8 +11,6 @@ module FormattedAttributes
         options = args.extract_options!
 
         args.each do |attr|
-          accessible_attributes << "formatted_#{attr}"
-
           class_eval <<-RUBY
             def #{attr}=(value)
               @formatted_#{attr} = nil
@@ -31,9 +28,6 @@ module FormattedAttributes
           RUBY
         end
       end
-    end
-
-    module InstanceMethods
     end
   end
 end

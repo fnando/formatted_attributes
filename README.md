@@ -1,47 +1,49 @@
-= Formatted Attributes
+# Formatted Attributes
 
 Sometimes you want to use a proxy attribute that will be formatted while displaying its value or receiving data from user.
 
-== Install
+## Install
 
-  gem install formatted_attributes
+    gem install formatted_attributes
 
-== Usage
+## Usage
 
-A formatted attribute will require two methods: <tt>format_to_#{formatter}</tt> and <tt>format_from_#{formatter}</tt>. The <tt>format_to_*</tt> method will convert the formatted value to the original value and the <tt>format_from_*</tt> method will do the other way around, converting the original value to the formatted version.
+A formatted attribute will require two methods: `format_to_#{formatter}` and `format_from_#{formatter}`. The `format_to_*` method will convert the formatted value to the original value and the `format_from_*` method will do the other way around, converting the original value to the formatted version.
 
-See an example on how to format prices from strings like <tt>1,23</tt> to cents like <tt>123</tt> and vice-versa.
+See an example on how to format prices from strings like `1,23` to cents like `123` and vice-versa.
 
-  class Product < ActiveRecord::Base
-    include ActionView::Helpers::NumberHelper
+```ruby
+class Product < ActiveRecord::Base
+  include ActionView::Helpers::NumberHelper
 
-    formatted :price, :with => :cents
+  formatted :price, with: 'cents'
 
-    private
-    def format_to_cents(amount)
-      _, operator, number, precision = *number.to_s.match(/^([+-])?(\d+)(?:[,.](\d+))?$/)
-      (BigDecimal("#{operator}#{number}.#{precision.to_i}") * 100).to_i
-    end
-
-    def format_from_cents(amount)
-      number = BigDecimal(number.to_s) / 100
-      number_to_currency(number, :unit => "", :separator => ",", :delimiter => "")
-    end
+  private
+  def format_to_cents(amount)
+    _, operator, number, precision = *number.to_s.match(/^([+-])?(\d+)(?:[,.](\d+))?$/)
+    (BigDecimal("#{operator}#{number}.#{precision.to_i}") * 100).to_i
   end
 
-  product = Product.new(:formatted_price => "1,23")
-  product.price
-  #=> 123
+  def format_from_cents(amount)
+    number = BigDecimal(number.to_s) / 100
+    number_to_currency(number, unit: '', separator: ',', delimiter: '')
+  end
+end
 
-  product.price = 456
-  product.formatted_price
-  #=> "4,56"
+product = Product.new(formatted_price: '1,23')
+product.price
+#=> 123
 
-== Maintainer
+product.price = 456
+product.formatted_price
+#=> "4,56"
+```
+
+## Maintainer
 
 * Nando Vieira (http://nandovieira.com.br)
 
-== License
+## License
 
 (The MIT License)
 

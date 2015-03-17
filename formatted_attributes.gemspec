@@ -1,6 +1,4 @@
-# -*- encoding: utf-8 -*-
-$:.push File.expand_path("../lib", __FILE__)
-require "formatted_attributes/version"
+require "./lib/formatted_attributes/version"
 
 Gem::Specification.new do |s|
   s.name        = "formatted_attributes"
@@ -18,8 +16,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency "activerecord"
-  s.add_development_dependency "rspec", ">= 2.0.0"
+  s.add_development_dependency "rspec"
   s.add_development_dependency "sqlite3-ruby"
   s.add_development_dependency "actionpack"
-  s.add_development_dependency "ruby-debug19"
 end
