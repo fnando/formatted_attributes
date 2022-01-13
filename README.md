@@ -1,36 +1,53 @@
-# Formatted Attributes
+# formatted_attributes
 
-Sometimes you want to use a proxy attribute that will be formatted while displaying its value or receiving data from user.
+[![Tests](https://github.com/fnando/formatted_attributes/workflows/ruby-tests/badge.svg)](https://github.com/fnando/formatted_attributes)
+[![Gem](https://img.shields.io/gem/v/formatted_attributes.svg)](https://rubygems.org/gems/formatted_attributes)
+[![Gem](https://img.shields.io/gem/dt/formatted_attributes.svg)](https://rubygems.org/gems/formatted_attributes)
 
-## Install
+Add methods that format attributes from/to helper methods. Works with
+ActiveRecord and non-ActiveRecord classes.
 
-    gem install formatted_attributes
+## Installation
+
+```bash
+gem install formatted_attributes
+```
+
+Or add the following line to your project's Gemfile:
+
+```ruby
+gem "formatted_attributes"
+```
 
 ## Usage
 
-A formatted attribute will require two methods: `format_to_#{formatter}` and `format_from_#{formatter}`. The `format_to_*` method will convert the formatted value to the original value and the `format_from_*` method will do the other way around, converting the original value to the formatted version.
+A formatted attribute will require two methods: `convert_with_#{formatter}` and
+`convert_from_#{formatter}`. The `convert_from_*` method will convert the
+formatted value to the original value and the `convert_with_*` method will do
+the other way around, converting the original value to the formatted version.
 
-See an example on how to format prices from strings like `1,23` to cents like `123` and vice-versa.
+See an example on how to format prices from strings like 1,23 to cents like 123
+and vice-versa.
 
 ```ruby
 class Product < ActiveRecord::Base
   include ActionView::Helpers::NumberHelper
 
-  formatted :price, with: 'cents'
+  formatted :price, with: :number_format
 
   private
-  def format_to_cents(amount)
+  def convert_with_number_format(amount)
+    number = BigDecimal(number.to_s) / 100
+    number_to_currency(number, unit: "", separator: ",", delimiter: "")
+  end
+
+  def convert_from_number_format(amount)
     _, operator, number, precision = *number.to_s.match(/^([+-])?(\d+)(?:[,.](\d+))?$/)
     (BigDecimal("#{operator}#{number}.#{precision.to_i}") * 100).to_i
   end
-
-  def format_from_cents(amount)
-    number = BigDecimal(number.to_s) / 100
-    number_to_currency(number, unit: '', separator: ',', delimiter: '')
-  end
 end
 
-product = Product.new(formatted_price: '1,23')
+product = Product.new(formatted_price: "1,23")
 product.price
 #=> 123
 
@@ -41,27 +58,25 @@ product.formatted_price
 
 ## Maintainer
 
-* Nando Vieira (http://nandovieira.com.br)
+- [Nando Vieira](https://github.com/fnando)
+
+## Contributors
+
+- https://github.com/fnando/formatted_attributes/contributors
+
+## Contributing
+
+For more details about how to contribute, please read
+https://github.com/fnando/formatted_attributes/blob/main/CONTRIBUTING.md.
 
 ## License
 
-(The MIT License)
+The gem is available as open source under the terms of the
+[MIT License](https://opensource.org/licenses/MIT). A copy of the license can be
+found at https://github.com/fnando/formatted_attributes/blob/main/LICENSE.md.
 
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-'Software'), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+## Code of Conduct
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+Everyone interacting in the formatted_attributes project's codebases, issue
+trackers, chat rooms and mailing lists is expected to follow the
+[code of conduct](https://github.com/fnando/formatted_attributes/blob/main/CODE_OF_CONDUCT.md).

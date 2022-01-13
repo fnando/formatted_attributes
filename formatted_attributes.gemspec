@@ -1,22 +1,48 @@
-require "./lib/formatted_attributes/version"
+# frozen_string_literal: true
 
-Gem::Specification.new do |s|
-  s.name        = "formatted_attributes"
-  s.version     = FormattedAttributes::Version::STRING
-  s.platform    = Gem::Platform::RUBY
-  s.authors     = ["Nando Vieira"]
-  s.email       = ["fnando.vieira@gmail.com"]
-  s.homepage    = "http://rubygems.org/gems/formatted_attributes"
-  s.summary     = "Add formatted methods for ActiveRecord attributes"
-  s.description = "Sometimes you need to expose a helper method that will convert its value before saving it to the database. This gem will add `formatted_` suffix to the attributes you specify."
+require_relative "./lib/formatted_attributes/version"
 
-  s.files         = `git ls-files`.split("\n")
-  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
-  s.require_paths = ["lib"]
+Gem::Specification.new do |spec|
+  spec.name    = "formatted_attributes"
+  spec.version = FormattedAttributes::VERSION
+  spec.authors = ["Nando Vieira"]
+  spec.email   = ["me@fnando.com"]
 
-  s.add_dependency "activerecord"
-  s.add_development_dependency "rspec"
-  s.add_development_dependency "sqlite3-ruby"
-  s.add_development_dependency "actionpack"
+  spec.summary = "Add methods that format attributes from/to helper methods."
+  spec.description = spec.summary
+  spec.license     = "MIT"
+  spec.required_ruby_version = Gem::Requirement.new(">= 2.7.0")
+
+  github_url = "https://github.com/fnando/formatted_attributes"
+  github_tree_url = "#{github_url}/tree/v#{spec.version}"
+
+  spec.homepage = github_url
+  spec.metadata["homepage_uri"] = spec.homepage
+  spec.metadata["bug_tracker_uri"] = "#{github_url}/issues"
+  spec.metadata["source_code_uri"] = github_tree_url
+  spec.metadata["changelog_uri"] = "#{github_tree_url}/CHANGELOG.md"
+  spec.metadata["documentation_uri"] = "#{github_tree_url}/README.md"
+  spec.metadata["license_uri"] = "#{github_tree_url}/LICENSE.md"
+  spec.metadata["rubygems_mfa_required"] = "true"
+
+  spec.files = Dir.chdir(File.expand_path(__dir__)) do
+    `git ls-files -z`
+      .split("\x0")
+      .reject {|f| f.match(%r{^(test|spec|features)/}) }
+  end
+
+  spec.bindir        = "exe"
+  spec.executables   = spec.files.grep(%r{^exe/}) {|f| File.basename(f) }
+  spec.require_paths = ["lib"]
+
+  spec.add_development_dependency "actionpack"
+  spec.add_development_dependency "activerecord"
+  spec.add_development_dependency "minitest"
+  spec.add_development_dependency "minitest-utils"
+  spec.add_development_dependency "pry-meta"
+  spec.add_development_dependency "rake"
+  spec.add_development_dependency "rubocop"
+  spec.add_development_dependency "rubocop-fnando"
+  spec.add_development_dependency "simplecov"
+  spec.add_development_dependency "sqlite3"
 end
