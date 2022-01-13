@@ -11,7 +11,7 @@ Prefix your message with one of the following:
 - [Security] in case of vulnerabilities.
 -->
 
-## Unreleased
+## v0.2.0 - 2022-01-13
 
 - [Changed] The converting methods have been renamed from `format_from_*` and
   `format_to_*` to `convert_from_*` and `convert_with_*`, respectively.
